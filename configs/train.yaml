@@ -1,0 +1,35 @@
+task: detection          # detection | segmentation
+model_variant: yolov8n   # yolov8n/s/m/l/x | yolov10n…x | rtdetr-l | rtdetr-x
+
+data:
+  train_dir: data/processed/train
+  val_dir: data/processed/val
+  image_size: 512
+  num_workers: 4
+
+train:
+  epochs: 100
+  batch_size: 8
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  optimizer: adamw        # adam | adamw | sgd
+  scheduler: cosine       # cosine | step | plateau
+  early_stopping: 10
+
+model:
+  pretrained: true
+  num_classes: 2          # background + lesion
+  input_channels: 1       # 1 for grayscale MRI, 3 for RGB
+
+loss:
+  detection: focal        # focal | ce
+  segmentation: dice      # dice | dice_ce | focal
+
+logging:
+  save_dir: experiments/
+  log_interval: 10
+
+deployment:
+  export_dir: deployments/
+  formats:
+    - onnx
